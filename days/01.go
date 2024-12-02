@@ -17,7 +17,7 @@ func check(e error) {
 	}
 }
 
-func main() {
+func readLists() ([]int, []int) {
 	cwd, err := os.Getwd();
 	check(err)
 
@@ -31,7 +31,7 @@ func main() {
 	
 	var left []int
 	var right []int
-	
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		parts := strings.Fields(line)
@@ -45,6 +45,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	return left, right
+}
+
+func part1() int {
+	left, right := readLists()
+
 	sort.Ints(left)
 	sort.Ints(right)
 
@@ -57,5 +63,36 @@ func main() {
 		}
 	}
 
-	fmt.Println(sum) // 1222801
+	return sum
+}
+
+func part2() int {
+	left, right := readLists()
+
+	scores := make(map[int]int)
+	for _, lVal := range left {
+		_, exists := scores[lVal]
+		if exists {
+			fmt.Printf("Exists in map: %d\n", lVal)
+			continue
+		}
+
+		for _, rVal := range right {
+			if lVal == rVal {
+				scores[lVal] += 1
+			}
+		}
+	}
+
+	totalScore := 0
+	for k, v := range scores {
+		totalScore += k * v
+	}
+
+	return totalScore
+}
+
+func main() {
+	fmt.Printf("Part 1: %d\n", part1()) // 1222801
+	fmt.Printf("Part 2: %d\n", part2()) // 22545250
 }
